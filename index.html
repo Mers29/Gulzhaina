@@ -5,504 +5,770 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Для тебя ❤️</title>
     <style>
-        :root {
-            --primary-bg: #fff0f5; /* Лавандово-розовый */
-            --secondary-bg: #ffe4e1; /* Нежно-розовый */
-            --text-color: #5a4b52;
-            --accent-color: #ffb6c1;
-            --btn-hover: #ff9fb0;
-            --font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        }
-
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            touch-action: manipulation;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --pink: #ffd1dc;
+            --lavender: #e6e6fa;
+            --white: #ffffff;
+            --text: #5a4a6a;
+            --accent: #ff8fab;
+            --success: #a8e6cf;
+            --shadow: rgba(90, 74, 106, 0.15);
         }
 
         body {
-            background: linear-gradient(135deg, var(--primary-bg), var(--secondary-bg));
-            color: var(--text-color);
-            font-family: var(--font-family);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--pink) 0%, var(--lavender) 50%, var(--white) 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            min-height: 100dvh;
             overflow: hidden;
+            color: var(--text);
+            position: relative;
         }
 
         .screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100vh;
-            padding: 20px;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-
-        .screen.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        h2 {
-            font-size: 28px;
-            margin-bottom: 25px;
-            color: #d87093;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-        }
-
-        /* Формы и кнопки */
-        .form-group {
-            margin-bottom: 20px;
-            width: 100%;
-            max-width: 320px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid var(--accent-color);
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.8);
-            transition: border-color 0.3s;
-        }
-
-        input:focus {
-            border-color: #d87093;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
-        .btn {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s, background-color 0.3s;
-            width: 120px;
-        }
-
-        .btn:active {
-            transform: scale(0.95);
-        }
-
-        .btn-secondary {
-            background-color: #ccc;
-        }
-
-        .error-msg {
-            color: #e63946;
-            margin-top: 15px;
-            min-height: 20px;
-            font-size: 14px;
-        }
-
-        /* Пазл */
-        #puzzle-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-
-        .puzzle-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px);
-            gap: 2px;
-            background: rgba(255,255,255,0.5);
-            padding: 4px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .puzzle-slot {
-            width: 100px;
-            height: 100px;
-            background: rgba(200, 200, 200, 0.3);
-            border: 1px dashed #aaa;
-            position: relative;
-        }
-
-        .puzzle-tray {
-            width: 320px;
-            height: 250px;
-            position: relative;
-            background: rgba(255,255,255,0.4);
-            border-radius: 12px;
-            border: 2px dashed var(--accent-color);
-        }
-
-        .puzzle-piece {
-            width: 100px;
-            height: 100px;
-            position: absolute;
-            background-size: 300px 300px;
-            background-image: ('https://github.com/Mers29/Gulzhaina/blob/main/photos/gulek.jpeg'); /* Ссылка на фото */
-            cursor: grab;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            border: 1px solid white;
-            touch-action: none; /* Важно для мобильного Drag and Drop */
-            border-radius: 4px;
-        }
-
-        .puzzle-piece:active {
-            cursor: grabbing;
-        }
-
-        /* Звезды */
-        #star-area {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            pointer-events: none; /* Пропускаем клики мимо звезд */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease-in-out;
+            z-index: 1;
         }
 
-        .star-counter {
-            position: absolute;
-            top: 30px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #d87093;
+        .screen.active {
+            opacity: 1;
+            pointer-events: all;
             z-index: 10;
-            background: rgba(255,255,255,0.7);
-            padding: 10px 20px;
-            border-radius: 20px;
         }
 
-        .star {
+        /* Floating hearts background */
+        .hearts-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart-float {
             position: absolute;
-            font-size: 45px; /* Крупные для удобства на телефоне */
-            pointer-events: auto;
-            cursor: pointer;
-            user-select: none;
-            animation: floatUp linear forwards;
-            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8));
-            /* Отключаем подсветку при тапе на мобилках */
-            -webkit-tap-highlight-color: transparent;
+            font-size: 20px;
+            opacity: 0.3;
+            animation: floatUp linear infinite;
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100px) rotate(360deg) scale(1.2); opacity: 0; }
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Финал */
-        #finale-text {
-            font-size: 20px;
-            line-height: 1.6;
-            color: #4a3b42;
-            padding: 0 15px;
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: var(--text);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 30px 24px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 32px var(--shadow);
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--lavender);
+            border-radius: 16px;
+            font-size: 1.1rem;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+            background: var(--white);
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(255, 143, 171, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+            touch-action: manipulation;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #ff6b9d);
+            color: white;
+            box-shadow: 0 4px 16px rgba(255, 107, 157, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #a8e6cf, #7fcdcd);
+            color: white;
+            box-shadow: 0 4px 16px rgba(124, 205, 205, 0.3);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #ffd3b6, #ffaaa5);
+            color: white;
+            box-shadow: 0 4px 16px rgba(255, 170, 165, 0.3);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn-row .btn {
+            flex: 1;
+            margin-top: 0;
+        }
+
+        .message {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.error {
+            background: #ffe0e0;
+            color: #c0392b;
+        }
+
+        .message.success {
+            background: #e0ffe8;
+            color: #27ae60;
+        }
+
+        .message.special {
+            background: #fff3e0;
+            color: #e67e22;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Puzzle styles */
+        .puzzle-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 20px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 16px;
+            border: 3px dashed var(--lavender);
+        }
+
+        .puzzle-piece {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-image: url('https://raw.githubusercontent.com/Mers29/Gulzhaina/main/photos/gulek.jpeg');
+            background-size: 300px 300px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: grab;
+            touch-action: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 5;
+        }
+
+        .puzzle-piece.dragging {
+            z-index: 100;
+            transform: scale(1.08);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            cursor: grabbing;
+        }
+
+        .puzzle-piece.locked {
+            z-index: 1;
+            cursor: default;
+            box-shadow: none;
+            border: 2px solid var(--success);
+        }
+
+        .puzzle-hint {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        /* Stars game */
+        .stars-counter {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 4px 16px var(--shadow);
+            z-index: 100;
+            display: none;
+        }
+
+        .stars-counter.show {
+            display: block;
+            animation: popIn 0.4s;
+        }
+
+        @keyframes popIn {
+            0% { transform: translateX(-50%) scale(0.5); }
+            60% { transform: translateX(-50%) scale(1.1); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        .star {
+            position: fixed;
+            font-size: 32px;
+            cursor: pointer;
+            user-select: none;
+            z-index: 50;
+            animation: starFloat linear infinite;
+            filter: drop-shadow(0 2px 4px rgba(255,215,0,0.4));
+        }
+
+        @keyframes starFloat {
+            0% { transform: translateX(-50px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(calc(100vw + 50px)) rotate(720deg); opacity: 0; }
+        }
+
+        .star.caught {
+            animation: starBurst 0.5s forwards !important;
+            pointer-events: none;
+        }
+
+        @keyframes starBurst {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(2); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* Final screen */
+        .final-text {
             max-width: 600px;
             text-align: center;
+            line-height: 1.8;
+            font-size: 1.15rem;
+            padding: 30px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px var(--shadow);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .final-text p {
+            margin-bottom: 16px;
+        }
+
+        .final-heart {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.2); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+        }
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--lavender);
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.3);
+        }
+
+        .dot.completed {
+            background: var(--success);
+        }
+
+        @media (max-width: 360px) {
+            .card { padding: 24px 16px; }
+            h1 { font-size: 1.5rem; }
+            .puzzle-container { width: 270px; height: 270px; }
+            .puzzle-piece { width: 90px; height: 90px; background-size: 270px 270px; }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
-    <div id="screen1" class="screen active">
-        <h2>Испытание 1</h2>
-        
-        <div class="form-group">
-            <label>Когда мы начали встречаться?</label>
-            <input type="text" id="q1" placeholder="Например: 1 января">
-        </div>
+    <!-- Floating hearts background -->
+    <div class="hearts-bg" id="heartsBg"></div>
 
-        <div class="form-group">
-            <label>Что я люблю больше всего?</label>
-            <input type="text" id="q2" placeholder="Твой ответ...">
-        </div>
+    <!-- Stars counter -->
+    <div class="stars-counter" id="starsCounter">⭐ <span id="starsCount">0</span> / 20</div>
 
-        <div class="form-group">
-            <label>Ты меня любишь?</label>
-            <div class="btn-group">
-                <button class="btn" onclick="checkScreen1(true)">ДА</button>
-                <button class="btn btn-secondary" onclick="checkScreen1(false)">НЕТ</button>
+    <!-- Screen 1: Quiz -->
+    <div class="screen active" id="screen1">
+        <div class="card">
+            <h1>💕 Испытание 1</h1>
+            <div id="quizContent">
+                <div class="question" id="qText">Когда мы начали встречаться?</div>
+                <input type="text" id="qInput" placeholder="Введи ответ..." autocomplete="off">
+                <button class="btn btn-primary" id="qBtn" onclick="checkAnswer()">Проверить</button>
+                <div class="message" id="qMessage"></div>
             </div>
         </div>
-        
-        <div id="error1" class="error-msg"></div>
-    </div>
-
-    <div id="screen2" class="screen">
-        <h2>Испытание 2</h2>
-        <p style="margin-bottom: 15px;">Собери нашу фотографию, перетягивая кусочки на свои места.</p>
-        
-        <div id="puzzle-container">
-            <div class="puzzle-grid" id="grid">
-                </div>
-            <div class="puzzle-tray" id="tray">
-                </div>
+        <div class="progress-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
         </div>
     </div>
 
-    <div id="screen3" class="screen">
-        <div class="star-counter">Звезд: <span id="score">0</span> / 20</div>
-        <div id="star-area"></div>
+    <!-- Screen 2: Puzzle -->
+    <div class="screen" id="screen2">
+        <div style="text-align:center; width:100%; max-width:420px;">
+            <h1>🧩 Испытание 2</h1>
+            <p class="puzzle-hint">Собери наше фото из кусочков. Перетащи каждый на правильное место.</p>
+            <div class="puzzle-container" id="puzzleContainer"></div>
+            <div class="message success" id="puzzleMessage" style="display:block; background:rgba(255,255,255,0.9);">Собрано: <span id="puzzleCount">0</span> / 9</div>
+        </div>
+        <div class="progress-dots">
+            <div class="dot completed"></div>
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
     </div>
 
-    <div id="screen4" class="screen">
-        <div id="finale-text">
-            Я очень сильно люблю тебя.<br><br>
-            Я хочу, чтобы ты знала, я никогда не брошу тебя, даже в самый трудный момент. Я всегда буду рядом, всегда помогу и сделаю всё, что в моих силах ради тебя. Я хочу отдать тебе всего себя, свою душу и всю любовь, которая есть во мне.<br><br>
-            Я хочу, чтобы между нами всегда были честность, доверие и открытость. Чтобы мы делились друг с другом самым сокровенным и никогда не врали друг другу.<br><br>
-            Прости меня за все моменты, когда я мог тебя ранить, обидеть или заставить плакать. Мне очень жаль. Ты для меня очень дорога, и я не хочу причинять тебе боль.<br><br>
-            Я люблю тебя всем сердцем. И я обещаю, я сделаю всё, чтобы ты была счастлива. Я хочу, чтобы однажды ты стала моей женой.<br><br>
-            <strong>Обещаю. ❤️</strong>
+    <!-- Screen 3: Catch Stars -->
+    <div class="screen" id="screen3">
+        <div style="text-align:center;">
+            <h1>⭐ Испытание 3</h1>
+            <p class="puzzle-hint">Поймай 20 звёздочек, которые проплывают по экрану!</p>
+        </div>
+        <div class="progress-dots">
+            <div class="dot completed"></div>
+            <div class="dot completed"></div>
+            <div class="dot active"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <!-- Screen 4: Final -->
+    <div class="screen" id="screen4">
+        <div class="final-text">
+            <div class="final-heart">❤️</div>
+            <p>Я очень сильно люблю тебя. Я хочу, чтобы ты знала, я никогда не брошу тебя, даже в самый трудный момент.</p>
+            <p>Я всегда буду рядом, всегда помогу и сделаю всё, что в моих силах ради тебя.</p>
+            <p>Я хочу отдать тебе всего себя, свою душу и всю любовь, которая есть во мне.</p>
+            <p>Я хочу, чтобы между нами всегда были честность, доверие и открытость. Чтобы мы делились друг с другом самым сокровенным и никогда не врали друг другу.</p>
+            <p>Прости меня за все моменты, когда я мог тебя ранить, обидеть или заставить плакать. Мне очень жаль. Ты для меня очень дорога, и я не хочу причинять тебе боль.</p>
+            <p>Я люблю тебя всем сердцем. И я обещаю, я сделаю всё, чтобы ты была счастлива.</p>
+            <p><strong>Я хочу, чтобы однажды ты стала моей женой. Обещаю.</strong></p>
+        </div>
+        <div class="progress-dots">
+            <div class="dot completed"></div>
+            <div class="dot completed"></div>
+            <div class="dot completed"></div>
+            <div class="dot active"></div>
         </div>
     </div>
 
     <script>
-        // --- Управление экранами ---
-        function switchScreen(fromId, toId) {
-            const from = document.getElementById(fromId);
-            const to = document.getElementById(toId);
-            
-            from.style.opacity = '0';
-            setTimeout(() => {
-                from.classList.remove('active');
-                to.classList.add('active');
-                // Даем браузеру отрендерить элемент перед анимацией прозрачности
+        // ===== Background Hearts =====
+        function createHearts() {
+            const container = document.getElementById('heartsBg');
+            const hearts = ['💕', '💖', '💗', '💓', '💝'];
+            for (let i = 0; i < 15; i++) {
+                const h = document.createElement('div');
+                h.className = 'heart-float';
+                h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                h.style.left = Math.random() * 100 + '%';
+                h.style.animationDuration = (6 + Math.random() * 10) + 's';
+                h.style.animationDelay = (Math.random() * 10) + 's';
+                h.style.fontSize = (14 + Math.random() * 20) + 'px';
+                container.appendChild(h);
+            }
+        }
+        createHearts();
+
+        // ===== Screen Navigation =====
+        function goToScreen(n) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen' + n).classList.add('active');
+            if (n === 3) startStarsGame();
+        }
+
+        // ===== Quiz Logic =====
+        let quizStep = 0;
+        const quizData = [
+            {
+                text: 'Когда мы начали встречаться?',
+                placeholder: 'Введи дату...',
+                check: (val) => val.toLowerCase().includes('30 января'),
+                error: 'Подумай ещё... Это особенный день 💭',
+                success: 'Правильно! 💕'
+            },
+            {
+                text: 'Что я люблю больше всего?',
+                placeholder: 'Введи ответ...',
+                check: (val) => {
+                    const v = val.toLowerCase().trim();
+                    const correct = ['гульжайна', 'гүлжайна', 'гүльжайна', 'гулек', 'гулекты'];
+                    return correct.some(c => v.includes(c));
+                },
+                specialCheck: (val) => val.toLowerCase().trim() === 'шоколад',
+                error: 'Нет, подумай о самом главном... 💭',
+                special: 'Шоколад я тоже люблю, но моя девушка ценнее и любимее! 🍫❤️',
+                success: 'Именно! Ты — мой мир 💖'
+            },
+            {
+                text: 'Ты меня любишь?',
+                type: 'buttons',
+                yes: 'Да, конечно! 💕'
+            }
+        ];
+
+        function renderQuiz() {
+            const data = quizData[quizStep];
+            const content = document.getElementById('quizContent');
+            const msg = document.getElementById('qMessage');
+            msg.className = 'message';
+            msg.textContent = '';
+
+            if (data.type === 'buttons') {
+                content.innerHTML = `
+                    <div class="question">${data.text}</div>
+                    <div class="btn-row">
+                        <button class="btn btn-yes" onclick="quizYes()">ДА ❤️</button>
+                        <button class="btn btn-no" onclick="quizNo()">НЕТ</button>
+                    </div>
+                    <div class="message" id="qMessage"></div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="question" id="qText">${data.text}</div>
+                    <input type="text" id="qInput" placeholder="${data.placeholder}" autocomplete="off">
+                    <button class="btn btn-primary" id="qBtn" onclick="checkAnswer()">Проверить</button>
+                    <div class="message" id="qMessage"></div>
+                `;
+                setTimeout(() => document.getElementById('qInput').focus(), 100);
+                document.getElementById('qInput').addEventListener('keypress', e => {
+                    if (e.key === 'Enter') checkAnswer();
+                });
+            }
+        }
+
+        function checkAnswer() {
+            const data = quizData[quizStep];
+            const input = document.getElementById('qInput');
+            const msg = document.getElementById('qMessage');
+            const val = input.value.trim();
+
+            if (!val) return;
+
+            if (data.specialCheck && data.specialCheck(val)) {
+                msg.className = 'message special show';
+                msg.textContent = data.special;
                 setTimeout(() => {
-                    to.style.opacity = '1';
-                }, 50);
-            }, 800);
+                    quizStep++;
+                    if (quizStep < quizData.length) renderQuiz();
+                }, 2500);
+                return;
+            }
+
+            if (data.check(val)) {
+                msg.className = 'message success show';
+                msg.textContent = data.success;
+                setTimeout(() => {
+                    quizStep++;
+                    if (quizStep < quizData.length) {
+                        renderQuiz();
+                    } else {
+                        goToScreen(2);
+                        initPuzzle();
+                    }
+                }, 1200);
+            } else {
+                msg.className = 'message error show';
+                msg.textContent = data.error;
+                input.style.animation = 'shake 0.4s';
+                setTimeout(() => input.style.animation = '', 400);
+            }
         }
 
-        // --- Испытание 1: Викторина ---
-        function checkScreen1(isYes) {
-            const errorDiv = document.getElementById('error1');
-            errorDiv.innerText = '';
-
-            if (!isYes) {
-                alert("Подумай еще раз! 😉");
-                return;
-            }
-
-            const q1 = document.getElementById('q1').value.toLowerCase().trim();
-            const q2 = document.getElementById('q2').value.toLowerCase().trim();
-
-            if (!q1.includes('18 сентября')) {
-                errorDiv.innerText = "Первый вопрос: неверно. Вспомни дату! (Пиши: 18 сентября)";
-                return;
-            }
-
-            const validAnswers = ['гульжайна', 'гүлжайна', 'гүльжайна', 'гулек', 'гулекты'];
-            
-            if (q2 === 'шоколад') {
-                alert("Шоколад я тоже люблю, но моя девушка ценнее и любимее!");
-            } else if (!validAnswers.includes(q2)) {
-                errorDiv.innerText = "Второй вопрос: подумай еще, кого я люблю больше всего на свете!";
-                return;
-            }
-
-            // Переход ко второму испытанию
-            switchScreen('screen1', 'screen2');
-            initPuzzle();
+        function quizYes() {
+            const msg = document.getElementById('qMessage');
+            msg.className = 'message success show';
+            msg.textContent = quizData[2].yes;
+            setTimeout(() => {
+                goToScreen(2);
+                initPuzzle();
+            }, 1500);
         }
 
-        // --- Испытание 2: Пазл ---
-        let lockedPieces = 0;
+        function quizNo() {
+            const msg = document.getElementById('qMessage');
+            msg.className = 'message error show';
+            msg.textContent = 'Попробуй ещё раз... 😢';
+        }
+
+        // Shake animation
+        const shakeStyle = document.createElement('style');
+        shakeStyle.textContent = `@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }`;
+        document.head.appendChild(shakeStyle);
+
+        // ===== Puzzle Logic =====
+        let puzzleLocked = 0;
+        const pieceSize = 100; // will adjust in init
+        let currentPieceSize = 100;
 
         function initPuzzle() {
-            const grid = document.getElementById('grid');
-            const tray = document.getElementById('tray');
-            grid.innerHTML = '';
-            tray.innerHTML = '';
+            const container = document.getElementById('puzzleContainer');
+            container.innerHTML = '';
+            puzzleLocked = 0;
+            document.getElementById('puzzleCount').textContent = '0';
 
-            const piecesOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8].sort(() => Math.random() - 0.5);
+            // Responsive sizing
+            const containerW = container.offsetWidth;
+            currentPieceSize = containerW / 3;
 
-            for (let i = 0; i < 9; i++) {
-                // Создаем слоты
-                const slot = document.createElement('div');
-                slot.className = 'puzzle-slot';
-                slot.dataset.index = i;
-                grid.appendChild(slot);
+            const pieces = [];
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    const piece = document.createElement('div');
+                    piece.className = 'puzzle-piece';
+                    piece.style.width = currentPieceSize + 'px';
+                    piece.style.height = currentPieceSize + 'px';
+                    piece.style.backgroundSize = containerW + 'px ' + containerW + 'px';
+                    piece.style.backgroundPosition = `-${col * currentPieceSize}px -${row * currentPieceSize}px`;
+                    piece.dataset.correctX = col * currentPieceSize;
+                    piece.dataset.correctY = row * currentPieceSize;
 
-                // Создаем кусочки
-                const piece = document.createElement('div');
-                piece.className = 'puzzle-piece';
-                piece.dataset.index = piecesOrder[i];
-                
-                // Рассчитываем background-position
-                const row = Math.floor(piecesOrder[i] / 3);
-                const col = piecesOrder[i] % 3;
-                piece.style.backgroundPosition = `-${col * 100}px -${row * 100}px`;
-                
-                // Случайная позиция в подносе
-                piece.style.left = Math.random() * (320 - 100) + 'px';
-                piece.style.top = Math.random() * (250 - 100) + 'px';
-                
-                setupDragEvents(piece);
-                tray.appendChild(piece);
-            }
-        }
+                    // Random initial position inside container
+                    const maxOffset = containerW - currentPieceSize;
+                    piece.style.left = (Math.random() * maxOffset) + 'px';
+                    piece.style.top = (Math.random() * maxOffset) + 'px';
 
-        function setupDragEvents(piece) {
-            let active = false;
-            let currentX, currentY, initialX, initialY;
-            let xOffset = 0, yOffset = 0;
-
-            piece.addEventListener('pointerdown', dragStart, false);
-            document.addEventListener('pointerup', dragEnd, false);
-            document.addEventListener('pointermove', drag, false);
-
-            function dragStart(e) {
-                if (piece.classList.contains('locked')) return;
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
-                active = true;
-                piece.style.zIndex = 100;
-            }
-
-            function drag(e) {
-                if (!active) return;
-                e.preventDefault(); // Останавливаем скроллинг страницы
-                currentX = e.clientX - initialX;
-                currentY = e.clientY - initialY;
-                xOffset = currentX;
-                yOffset = currentY;
-                piece.style.transform = `translate(${currentX}px, ${currentY}px)`;
-            }
-
-            function dragEnd(e) {
-                if (!active) return;
-                active = false;
-                piece.style.zIndex = 1;
-
-                // Проверяем пересечение со слотами
-                const slots = document.querySelectorAll('.puzzle-slot');
-                const pieceRect = piece.getBoundingClientRect();
-                let dropped = false;
-
-                slots.forEach(slot => {
-                    const slotRect = slot.getBoundingClientRect();
-                    // Если центр кусочка находится внутри слота
-                    const pieceCenterX = pieceRect.left + pieceRect.width / 2;
-                    const pieceCenterY = pieceRect.top + pieceRect.height / 2;
-
-                    if (
-                        pieceCenterX > slotRect.left &&
-                        pieceCenterX < slotRect.right &&
-                        pieceCenterY > slotRect.top &&
-                        pieceCenterY < slotRect.bottom
-                    ) {
-                        if (slot.dataset.index === piece.dataset.index) {
-                            // Правильное попадание
-                            slot.appendChild(piece);
-                            piece.style.position = 'static';
-                            piece.style.transform = 'none';
-                            piece.classList.add('locked');
-                            piece.style.cursor = 'default';
-                            dropped = true;
-                            lockedPieces++;
-                            
-                            if (lockedPieces === 9) {
-                                setTimeout(() => {
-                                    switchScreen('screen2', 'screen3');
-                                    initStars();
-                                }, 1000);
-                            }
-                        }
-                    }
-                });
-
-                // Возврат на место, если не попал
-                if (!dropped) {
-                    xOffset = 0;
-                    yOffset = 0;
-                    piece.style.transform = `translate(0px, 0px)`;
+                    makeDraggable(piece, container);
+                    pieces.push(piece);
+                    container.appendChild(piece);
                 }
             }
         }
 
-        // --- Испытание 3: Ловля звезд ---
-        let caughtStars = 0;
-        let starInterval;
+        function makeDraggable(el, container) {
+            let startX, startY, initialLeft, initialTop;
+            let isDragging = false;
 
-        function initStars() {
-            caughtStars = 0;
-            document.getElementById('score').innerText = caughtStars;
-            starInterval = setInterval(spawnStar, 600);
+            function onStart(e) {
+                if (el.classList.contains('locked')) return;
+                isDragging = true;
+                el.classList.add('dragging');
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const rect = el.getBoundingClientRect();
+                const contRect = container.getBoundingClientRect();
+                startX = clientX;
+                startY = clientY;
+                initialLeft = el.offsetLeft;
+                initialTop = el.offsetTop;
+            }
+
+            function onMove(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+                el.style.left = (initialLeft + dx) + 'px';
+                el.style.top = (initialTop + dy) + 'px';
+            }
+
+            function onEnd(e) {
+                if (!isDragging) return;
+                isDragging = false;
+                el.classList.remove('dragging');
+
+                const correctX = parseFloat(el.dataset.correctX);
+                const correctY = parseFloat(el.dataset.correctY);
+                const currentX = parseFloat(el.style.left);
+                const currentY = parseFloat(el.style.top);
+                const threshold = currentPieceSize * 0.35;
+
+                if (Math.abs(currentX - correctX) < threshold && Math.abs(currentY - correctY) < threshold) {
+                    el.style.left = correctX + 'px';
+                    el.style.top = correctY + 'px';
+                    el.classList.add('locked');
+                    puzzleLocked++;
+                    document.getElementById('puzzleCount').textContent = puzzleLocked;
+
+                    // Small celebration
+                    el.style.animation = 'popIn 0.4s';
+
+                    if (puzzleLocked === 9) {
+                        setTimeout(() => goToScreen(3), 800);
+                    }
+                }
+            }
+
+            el.addEventListener('mousedown', onStart);
+            el.addEventListener('touchstart', onStart, { passive: false });
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('touchmove', onMove, { passive: false });
+            document.addEventListener('mouseup', onEnd);
+            document.addEventListener('touchend', onEnd);
+        }
+
+        // ===== Stars Game =====
+        let starsCaught = 0;
+        let starInterval;
+        let starsActive = false;
+
+        function startStarsGame() {
+            starsCaught = 0;
+            starsActive = true;
+            document.getElementById('starsCount').textContent = '0';
+            document.getElementById('starsCounter').classList.add('show');
+
+            // Spawn stars
+            starInterval = setInterval(() => {
+                if (!starsActive) return;
+                spawnStar();
+            }, 600);
+
+            // Also spawn one immediately
+            spawnStar();
         }
 
         function spawnStar() {
-            if (caughtStars >= 20 || document.getElementById('screen3').style.opacity === '0') return;
-
-            const area = document.getElementById('star-area');
+            if (starsCaught >= 20) return;
             const star = document.createElement('div');
             star.className = 'star';
-            star.innerText = '⭐';
-            
-            // Случайная позиция по X
-            const randomX = Math.random() * 80 + 10; // от 10% до 90% экрана
-            star.style.left = `${randomX}%`;
-            
-            // Случайная скорость всплытия
-            const duration = Math.random() * 2 + 3; // 3-5 секунд
-            star.style.animationDuration = `${duration}s`;
+            star.textContent = '⭐';
+            star.style.top = (10 + Math.random() * 80) + '%';
+            star.style.left = '-50px';
+            const duration = 3 + Math.random() * 4;
+            star.style.animationDuration = duration + 's';
 
-            // Обработка клика
-            const catchStar = (e) => {
-                e.preventDefault();
-                star.removeEventListener('pointerdown', catchStar);
-                star.style.transform = 'scale(0)';
-                star.style.transition = 'transform 0.2s';
-                
-                caughtStars++;
-                document.getElementById('score').innerText = caughtStars;
-                
-                setTimeout(() => star.remove(), 200);
+            star.addEventListener('click', () => catchStar(star));
+            star.addEventListener('touchstart', (e) => { e.preventDefault(); catchStar(star); }, { passive: false });
 
-                if (caughtStars >= 20) {
-                    clearInterval(starInterval);
-                    // Переход к финалу
-                    setTimeout(() => {
-                        switchScreen('screen3', 'screen4');
-                    }, 500);
-                }
-            };
+            document.body.appendChild(star);
 
-            star.addEventListener('pointerdown', catchStar);
-            area.appendChild(star);
-
-            // Удаляем звезду после завершения анимации, если не поймана
+            // Remove after animation
             setTimeout(() => {
-                if (document.body.contains(star)) {
-                    star.remove();
-                }
+                if (star.parentNode) star.remove();
             }, duration * 1000);
+        }
+
+        function catchStar(star) {
+            if (star.classList.contains('caught')) return;
+            star.classList.add('caught');
+            starsCaught++;
+            document.getElementById('starsCount').textContent = starsCaught;
+
+            // Pop effect on counter
+            const counter = document.getElementById('starsCounter');
+            counter.style.transform = 'translateX(-50%) scale(1.2)';
+            setTimeout(() => counter.style.transform = 'translateX(-50%) scale(1)', 200);
+
+            if (starsCaught >= 20) {
+                starsActive = false;
+                clearInterval(starInterval);
+                setTimeout(() => {
+                    document.querySelectorAll('.star').forEach(s => s.remove());
+                    document.getElementById('starsCounter').classList.remove('show');
+                    goToScreen(4);
+                }, 800);
+            }
         }
     </script>
 </body>
